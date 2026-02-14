@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>For Chicku</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito:wght@700&display=swap" rel="stylesheet">
+  <style>
+    :root { --heart-color: #ff0a54; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center;
+      background-color: #fff0f3; font-family: 'Nunito', sans-serif; overflow: hidden;
+    }
+
+    /* ADD-ON: Raining Hearts Background */
+    .rain-container { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .small-heart { 
+      position: absolute; 
+      color: var(--heart-color); 
+      animation: rain linear infinite; 
+      opacity: 0.6; 
+      user-select: none;
+    }
+    @keyframes rain {
+      0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.6; }
+      90% { opacity: 0.6; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* THE ZONE: This invisible box keeps buttons near the heart */
+    .boundary-zone {
+      position: relative;
+      width: 400px; /* Limits how far they can "run" */
+      height: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .heart-container {
+      position: relative; width: 400px; height: 400px;
+      display: flex; align-items: center; justify-content: center;
+      animation: heartbeat 2.5s infinite ease-in-out;
+    }
+
+    .heart-shape {
+      position: absolute; width: 260px; height: 260px;
+      background-color: var(--heart-color); transform: rotate(-45deg);
+      box-shadow: 0 0 50px rgba(255, 10, 84, 0.4);
+    }
+    .heart-shape::before, .heart-shape::after {
+      content: ""; position: absolute; width: 260px; height: 260px;
+      background-color: var(--heart-color); border-radius: 50%;
+    }
+    .heart-shape::before { top: -130px; left: 0; }
+    .heart-shape::after { left: 130px; top: 0; }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      30% { transform: scale(1.05); }
+    }
+
+    .content { position: relative; z-index: 10; text-align: center; width: 320px; color: white; }
+    .name { font-family: 'Playfair Display', serif; font-size: 3.2rem; margin: 0; text-shadow: 2px 4px 8px rgba(0,0,0,0.2); }
+    h2 { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin: 5px 0 20px 0; font-weight: 400; }
+
+    .buttons { display: flex; justify-content: center; gap: 15px; height: 50px; }
+    
+    button {
+      padding: 12px 24px; border-radius: 50px; border: none; font-size: 0.95rem;
+      font-weight: 700; cursor: pointer; transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .btn-yes { background: #fff; color: var(--heart-color); z-index: 20; border: 2px solid white; position: relative; }
+    .btn-no { background: rgba(255,255,255,0.2); color: #fff; backdrop-filter: blur(5px); border: 1px solid white; position: relative; }
+
+    /* Success Screen */
+    .overlay {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.85); z-index: 99; opacity: 0; pointer-events: none; transition: 0.4s;
+    }
+    .overlay.show { opacity: 1; pointer-events: auto; }
+    .modal { background: #fff; padding: 40px; border-radius: 30px; text-align: center; width: 300px; border: 3px solid var(--heart-color); }
+  </style>
+</head>
+<body>
+
+  <div class="rain-container" id="rainBox"></div>
+
+  <div class="boundary-zone" id="zone">
+    <div class="heart-container">
+      <div class="heart-shape"></div>
+      <div class="content">
+        <h1 class="name">Chicku,</h1>
+        <h2>Will you be my Valentine? ❤️</h2>
+        <div class="buttons">
+          <button id="yesBtn" class="btn-yes">Yes, Babu!</button>
+          <button id="noBtn" class="btn-no">No, sorry</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="overlay" class="overlay">
+    <div class="modal">
+      <h2 style="color: #ff0a54; margin:0; font-family: 'Playfair Display'; font-size: 2rem;">I LOVE YOU! 🌹</h2>
+      <p style="color:#333; font-weight: bold; margin-top: 15px;">I knew you'd say yes, Chicku! 💖</p>
+      <button onclick="location.reload()" style="background:#fce4ec; color:#ff0a54; padding:10px 20px; border:none; border-radius:10px; cursor:pointer; font-weight:bold; margin-top: 15px;">Dobara try kroge?</button>
+    </div>
+  </div>
+
+  <script>
+    // ADD-ON: Optimized Raining Hearts
+    const rainBox = document.getElementById('rainBox');
+    const heartSymbols = ['❤', '♥', '❣', '💕', '💓'];
+    
+    for (let i = 0; i < 50; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'small-heart';
+      heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = (Math.random() * 15 + 10) + 'px';
+      heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      heart.style.animationDelay = Math.random() * 5 + 's';
+      rainBox.appendChild(heart);
+    }
+
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const zone = document.getElementById('zone');
+    const overlay = document.getElementById('overlay');
+    
+    let yesAttempts = 0;
+    const MAX_ATTEMPTS = 8; 
+
+    // Frozen logic: Uses the 'zone' container
+    function moveNearHeart(el) {
+      const zoneRect = zone.getBoundingClientRect();
+      const elWidth = el.offsetWidth;
+      const elHeight = el.offsetHeight;
+
+      const maxX = zoneRect.width - elWidth;
+      const maxY = zoneRect.height - elHeight;
+
+      const randomX = Math.random() * maxX;
+      const randomY = Math.random() * maxY;
+
+      el.style.position = 'absolute'; 
+      el.style.left = randomX + 'px';
+      el.style.top = randomY + 'px';
+      el.style.zIndex = "100";
+    }
+
+    noBtn.addEventListener('mouseover', () => moveNearHeart(noBtn));
+    noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNearHeart(noBtn); });
+
+    function handleYesInteraction(e) {
+      if (yesAttempts < MAX_ATTEMPTS) {
+        if (e.type === 'touchstart' || e.type === 'click') e.preventDefault();
+        moveNearHeart(yesBtn);
+        yesAttempts++;
+        
+        if (yesAttempts === MAX_ATTEMPTS) {
+          yesBtn.style.position = 'relative';
+          yesBtn.style.left = '0';
+          yesBtn.style.top = '0';
+          yesBtn.style.transform = "scale(1.4)";
+        }
+      } else if (e.type === 'click') {
+        overlay.classList.add('show');
+      }
+    }
+
+    yesBtn.addEventListener('mouseover', () => {
+      if (yesAttempts < MAX_ATTEMPTS) {
+        moveNearHeart(yesBtn);
+        yesAttempts++;
+        if (yesAttempts === MAX_ATTEMPTS) {
+          yesBtn.style.position = 'relative';
+          yesBtn.style.left = '0';
+          yesBtn.style.top = '0';
+          yesBtn.style.transform = "scale(1.4)";
+        }
+      }
+    });
+
+    yesBtn.addEventListener('click', handleYesInteraction);
+    yesBtn.addEventListener('touchstart', handleYesInteraction);
+  </script>
+</body>
+</html>
